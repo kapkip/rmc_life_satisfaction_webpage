@@ -2,7 +2,7 @@
 title: "Self-reported life satisfaction, 2011 to 2023"
 subtitle: "Replicating the Our World in Data Grapher"
 author: "Cassandra Pantuso" 
-date: "24-07-2024"
+date: "2024-07-24"
 theme: united
 ---
 
