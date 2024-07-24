@@ -1,7 +1,7 @@
 ---
 title: "Self-reported life satisfaction, 2011 to 2023"
 subtitle: "Replicating the Our World in Data Grapher"
-author: "YOUR NAME HERE" # Remember to add your name!
+author: "Cassandra Pantuso" 
 date: "24-07-2024"
 theme: united
 ---
@@ -45,6 +45,7 @@ The main life evaluation question asked in the poll is the Cantril Life Ladder q
 
 > “Please imagine a ladder, with steps numbered from 0 at the bottom to 10 at the top. The top of the ladder represents the best possible life for you and the bottom of the ladder represents the worst possible life for you. On which step of the ladder would you say you personally feel you stand at this time?”
 
+:::{.panel-tabset}
 
 ## 🔢 Table
 
@@ -57,7 +58,21 @@ The main life evaluation question asked in the poll is the Cantril Life Ladder q
 
 # Create table
 
-"WRITE_YOUR_CODE_HERE"
+
+
+filter_cantril <- cantril %>% 
+  filter(Year == 2011 | Year == 2023) %>% 
+  pivot_wider(names_from = `Year`, values_from = `Cantril ladder score`) %>% 
+  select(-Code) %>% 
+  mutate(`Absolute change` = round(`2023` - `2011`, 2)) %>% 
+  mutate(`Relative change` = round((`2023`-`2011`) / `2011`, 2)) #divide by original value
+
+
+
+
+reactable(filter_cantril,
+    columns = list(`Relative change` = colDef(format = colFormat(percent = TRUE, digits = 1))) 
+  )
 ```
 
 
@@ -107,7 +122,14 @@ cantril %>%
 # Note that your chart will not have the ability to filter countries like the one on the Our World in Data page.
 
 # Create line chart
-"WRITE_YOUR_CODE_HERE"
+cantril_plot <- ggplot(cantril %>% 
+  filter(Country %in% c("China", "India", "United States", "Indonesia"))) +
+    geom_line(aes(x = `Year`, y = `Cantril ladder score`, color = `Country`))+
+  scale_y_continuous(limits = c(0,10)) +
+  labs(x = "Years", y = "Satisfaction") +
+  theme_minimal() 
+
+  ggplotly(cantril_plot)
 ```
 
 ## 📈 Advanced Chart
@@ -149,7 +171,10 @@ country_filter <- filter_select(
 bscols(
   list(country_filter, cantril_plotly)
 )
+
+
 ```
+:::
 
 <!-- Custom javascript to set default values in the filter: -->
 <script>
