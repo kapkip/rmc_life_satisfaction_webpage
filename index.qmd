@@ -128,7 +128,7 @@ cantril_plot <- ggplot(cantril_round %>%
   filter(Country %in% c("China", "India", "United States", "Indonesia", "Pakistan", "Nigeria"))) +
     geom_line(aes(x = `Year`, y = `Cantril ladder score`, color = `Country`))+
   scale_y_continuous(limits = c(0,10)) +
-  labs(x = "Years", y = "Satisfaction") +
+  labs(y = "Cantril ladder score") +
   theme_minimal() 
 
   ggplotly(cantril_plot)
