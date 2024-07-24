@@ -58,17 +58,16 @@ The main life evaluation question asked in the poll is the Cantril Life Ladder q
 
 # Create table
 
-
-
 filter_cantril <- cantril %>% 
   filter(Year == 2011 | Year == 2023) %>% 
   pivot_wider(names_from = `Year`, values_from = `Cantril ladder score`) %>% 
   select(-Code) %>% 
-  mutate(`Absolute change` = round(`2023` - `2011`, 2)) %>% 
-  mutate(`Relative change` = round((`2023`-`2011`) / `2011`, 2)) #divide by original value
-
-
-
+  mutate(
+    `2023` = round(`2023`, 2),
+    `2011` = round(`2011`, 2),
+    `Absolute change` = round(`2023` - `2011`, 2),
+    `Relative change` = round((`2023` - `2011`) / `2011`, 2)
+  )
 
 reactable(filter_cantril,
     columns = list(`Relative change` = colDef(format = colFormat(percent = TRUE, digits = 1))) 
@@ -122,8 +121,11 @@ cantril %>%
 # Note that your chart will not have the ability to filter countries like the one on the Our World in Data page.
 
 # Create line chart
-cantril_plot <- ggplot(cantril %>% 
-  filter(Country %in% c("China", "India", "United States", "Indonesia"))) +
+cantril_round <- cantril %>% 
+  mutate(`Cantril ladder score` = round(`Cantril ladder score`, 2))
+
+cantril_plot <- ggplot(cantril_round %>% 
+  filter(Country %in% c("China", "India", "United States", "Indonesia", "Pakistan", "Nigeria"))) +
     geom_line(aes(x = `Year`, y = `Cantril ladder score`, color = `Country`))+
   scale_y_continuous(limits = c(0,10)) +
   labs(x = "Years", y = "Satisfaction") +
@@ -171,7 +173,6 @@ country_filter <- filter_select(
 bscols(
   list(country_filter, cantril_plotly)
 )
-
 
 ```
 :::
